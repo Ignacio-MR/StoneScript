@@ -1,0 +1,87 @@
+/*
+* @author Rey Oscuro
+*/
+
+import Pets/Snail
+import Pets/Boo
+import Fishing
+import UI/MindstoneButton
+
+?hp <= 8 & (item.potion = heal | item.potion = vamp)
+    activate potion
+?item.left.state = 3
+  equipL *0 sword //trash
+  equipL @item.left@
+?item.right.state = 3
+  equipR *0 shield //trash
+  equip @item.right@
+
+func farm()
+    ?harvest = Boulder
+        equip shovel
+        habilidad()
+    :?harvest = Tree
+        equip hatchet
+        habilidad()
+    
+
+func run()
+    ?harvest.distance < 10
+        farm()
+    :
+        loadout 5
+
+func habilidad()
+    ?foe.distance <= 10 | harvest.distance <= 5
+        ?item.right.time <= 0
+            activate R
+        ?item.left.time <= 0 
+            activate L
+
+?loc = Rocky
+    ?foe.distance < 25
+        equip heavy hammer *5
+        habilidad()
+    :
+        run()
+
+?loc = Deadwood
+    ?harvest.distance < 10
+        farm()
+    :?foe.distance < 18
+        ?foe = mosquito
+            loadout 2
+        :?(foe = scarab  | foe = boss)
+            equip heavy hammer *5
+            habilidad()
+    :
+        run()
+
+
+?loc = Caves
+    run()
+    ?foe.distance < 18
+        ?foe = boss
+            equip heavy hammer *5
+            habilidad()
+        :
+            ?item.potion ! empty &  item.potion = xp
+                activate potion
+            loadout 2
+    :
+        run()
+
+?loc = Mine
+    run()
+    ?foe.distance < 18
+        ?foe = boss
+            >@foe.state@
+            >@foe.time@
+            //No van
+            ?foe.state => 33 & foe.time => 241 
+                equip heavy hammer *5
+                habilidad()
+            :
+                loadout 3
+    :
+        run()

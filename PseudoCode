@@ -1,0 +1,43 @@
+?loc = "caves"
+  ?foe.distance > 23 //non-combat section
+    equipL trisk
+    ?pickup.distance < 15
+      equipR star
+    :
+      equipR compound //or something else, like rune shield
+  :?foe = "phase" //boss section
+    ?dodge check //replace with conditions to dodge
+      //code here
+    :?ability check1 //replace with conditions for ability
+      //code here
+    :?ability check2 //replace with conditions for ability
+      //code here
+    :?foe.distance < 17 & foe.distance > 10
+    ^& item.GetCooldown("dash") <= 0 //dash section
+      equipR dashing shield
+    ://general combat
+      //code here
+  :?foe = "boss" //miniboss section
+    //code here
+  : //anything else
+    //code here
+
+:?loc = "mushroom"
+  ?foe.distance > 23 //non-combat section
+    //code here
+  :?foe = "phase" //boss section
+    ?dodge check //replace with conditions to dodge
+      //code here
+    :?ability check1 //replace with conditions for ability
+      //code here
+    :?ability check2 //replace with conditions for ability
+      //code here
+    :?dash check //replace with conditions for dash
+      //code here
+    ://general combat
+      //code here
+  :?foe = "boss" //miniboss section
+    //code here
+  : //anything else
+    //code here
+//repeat for further locations

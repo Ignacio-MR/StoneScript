@@ -1,0 +1,11 @@
+func Dodge()
+  ?item.GetCooldown("mind") <= 0
+    equip mind
+  :
+    Block()
+
+func Block()
+  ?hp < hpmax
+    equipR vigor shield ah
+  :
+    equipR fire shield af

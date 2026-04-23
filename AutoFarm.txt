@@ -1,87 +1,151 @@
 /*
 * @author Rey Oscuro
 */
-
+/*--------ASCII caracters---------
+'☆'  // white star
+'☺'  // white smiling face
+'ʘ'  // latin letter bilabial click
+'♥'  // hart
+'❤' // black heart suit
+'♦'  // black diamond suit
+*/
+/*-----Colores-------
+Cyan: #02e5ff
+Yellow: #ffff62
+Green: #32da5a
+Blue: #0063ff
+Red: #ff2222
+*/
+/*--------List of valid ?loc--------- 
+rocky
+deadwood
+cave
+shroom
+haunted | crypt
+bronze
+icy
+temple | nagaraja 
+*/
 import Pets/Snail
 import Pets/Boo
-import Fishing
+import Fishing   
+import BragMeter
+import Calculator
+import BetterInfo2
 import UI/MindstoneButton
 
-?hp <= 8 & (item.potion = heal | item.potion = vamp)
+var dhDist = ?foe.distance <= 18 
+^& foe.distance >= 16
+var longDist = 20
+var rune = stone
+?foe = vigor
+    rune = poison
+?foe = poison
+    rune = ice
+?foe = ice
+    rune = fire
+?foe = fire
+    rune = aether
+?foe = aether
+    rune = vigor
+
+
+?hp <= 8 & (item.potion = heal | 
+^item.potion = vamp)
     activate potion
 ?item.left.state = 3
   equipL *0 sword //trash
   equipL @item.left@
+  habilitie()
 ?item.right.state = 3
   equipR *0 shield //trash
   equip @item.right@
+  habilitie()
+
+?1 > 0
+    >`0,1, @foe.state@
+    >`0,2, @foe.time@
+    >`0,3, @foe.distance@
+    >`0,4, @dhDist@
+    >`0,5, @foe.name@
+
+func run()
+    ?foe.distance > longDist
+        ?harvest.distance < 10
+            farm()
+        :
+            loadout 5
+    :
+        loadout 3
+        ?dhDist
+            dash()
+        :?foe.distance < 10
+            loadout 1
+
+func dash()
+    ?item.GetCooldown("bash") <= 0 
+        equipR bashing shield
+    :?item.GetCooldown("dash") <= 0
+        equipR dashing shield
+    :
+        run()
+
+func dodge()
+    ?item.GetCooldown("mind") <= 0
+        equip mind
+        run()
 
 func farm()
     ?harvest = Boulder
         equip shovel
-        habilidad()
     :?harvest = Tree
         equip hatchet
-        habilidad()
-    
 
-func run()
-    ?harvest.distance < 10
-        farm()
-    :
-        loadout 5
-
-func habilidad()
-    ?foe.distance <= 10 | harvest.distance <= 5
+func habilitie()
+    ?foe.distance <= 10 | 
+    ^harvest.distance <= 5
         ?item.right.time <= 0
             activate R
         ?item.left.time <= 0 
             activate L
 
 ?loc = Rocky
-    ?foe.distance < 25
-        equip heavy hammer *5
-        habilidad()
+    ?harvest.distance <= 5
+        farm()
     :
-        run()
+        equip heavy hammer *5
+        habilitie()
 
 ?loc = Deadwood
-    ?harvest.distance < 10
-        farm()
-    :?foe.distance < 18
+    run()
+    ?foe.distance < 18
         ?foe = mosquito
-            loadout 2
+            loadout 3
         :?(foe = scarab  | foe = boss)
             equip heavy hammer *5
-            habilidad()
-    :
-        run()
-
-
+        
 ?loc = Caves
-    run()
-    ?foe.distance < 18
-        ?foe = boss
-            equip heavy hammer *5
-            habilidad()
-        :
-            ?item.potion ! empty &  item.potion = xp
-                activate potion
-            loadout 2
+    ?foe = boss
+        run()
     :
         run()
+        ?item.potion ! empty & 
+        ^item.potion = xp
+            activate potion
 
 ?loc = Mine
-    run()
-    ?foe.distance < 18
-        ?foe = boss
-            >@foe.state@
-            >@foe.time@
-            //No van
-            ?foe.state => 33 & foe.time => 241 
-                equip heavy hammer *5
-                habilidad()
+    ?foe = boss
+        ?foe.state < 32
+            loadout 3
+        :?foe.time = 30
+            //probar 55^
+            dodge()
+        :
+            ?foe.distance > longDist
+                run()
+            ?dhDist
+                dash()
             :
-                loadout 3
+                loadout 1
     :
         run()

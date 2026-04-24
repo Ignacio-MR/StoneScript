@@ -33,6 +33,9 @@ import BragMeter
 import Calculator
 import BetterInfo2
 import UI/MindstoneButton
+import UI/FancyUI/colour
+import UI/FancyUI/fancyui
+import UI/FancyUI/print
 
 var dhDist = ?foe.distance <= 18 
 ^& foe.distance >= 16
